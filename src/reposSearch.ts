@@ -5,8 +5,8 @@ import 'materialize-css/dist/js/materialize.js'
 import { fromEvent, from, Observable, of } from 'rxjs';
 import { catchError, debounceTime, filter } from 'rxjs/operators';
 import { map, switchMap } from 'rxjs/operators';
-import { IGitReposResponce } from '../custom_types/IGitReposResponce';
-import { IGitResponceMetaData } from '../custom_types/IGitResponceMetaData';
+import { IReposResponce } from '../custom_types/IReposResponce';
+import { IResponceMetaData } from '../custom_types/IResponceMetaData';
 
 const searchInput: HTMLInputElement = document.querySelector("#search_text") as HTMLInputElement;
 const foundedRepositoriesUl: HTMLUListElement = document.querySelector(".collection") as HTMLUListElement;
@@ -39,7 +39,7 @@ typeInSearchInput$.pipe(
         renderError( err);
         return {};
     })
-    ).subscribe((response: IGitResponceMetaData) => {
+    ).subscribe((response: IResponceMetaData) => {
         renderRepositoriesListName(
             response
         );
@@ -50,20 +50,20 @@ const renderError = (error: String): void => {
     errorContainer.innerHTML = ` <p> ${error}</p>`;
 };
 
-const renderRepositoriesListName = (response: IGitResponceMetaData) => {
+const renderRepositoriesListName = (response: IResponceMetaData) => {
     foundedRepositoriesUl.innerHTML = '';
     if (response && !response.incomplete_results && response.items.length > 0) {
-        const repos: Observable<IGitReposResponce[]> = of(response.items as IGitReposResponce[]);
+        const repos: Observable<IReposResponce[]> = of(response.items as IReposResponce[]);
         repos.pipe(map( (items)=> {
             return items.slice(0, 10)
-        })).subscribe((items: IGitReposResponce[]) => {
+        })).subscribe((items: IReposResponce[]) => {
             createLiElements(items);
         });
     }
 };
 
-const createLiElements = (items: IGitReposResponce[]) => {
-    items.map((item: IGitReposResponce) => {
+const createLiElements = (items: IReposResponce[]) => {
+    items.map((item: IReposResponce) => {
         const liHTMLElement: HTMLLIElement = document.createElement('li');
         liHTMLElement.className = 'collection-item';
         const divHTMLElement: HTMLDivElement = document.createElement('div');
