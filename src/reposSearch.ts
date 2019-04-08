@@ -25,15 +25,7 @@ typeInSearchInput$.pipe(
         return searchValue.length > 2
     }),
     switchMap((searchValue: string) => {
-        return from(
-            fetch(`https://api.github.com/search/repositories?q=${(searchValue).trim()}+in:name,description`)
-                .then((result) => {
-                    return result.json();
-                })
-                .catch((error) => {
-                console.log(error);
-            })
-        )
+        return from(fetchData(searchValue))
     }),
     catchError((err: any) => {
         renderError( err);
@@ -44,6 +36,16 @@ typeInSearchInput$.pipe(
             response
         );
     });
+
+const fetchData = (searchValue: string): Promise<any> => {
+    return fetch(`https://api.github.com/search/repositories?q=${(searchValue).trim()}+in:name,description`)
+        .then((result) => {
+            return result.json();
+        })
+        .catch((error) => {
+            return error;
+        })
+};
 
 const renderError = (error: String): void => {
     const errorContainer: HTMLDivElement = document.querySelector('.error') as HTMLDivElement;
